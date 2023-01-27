@@ -3,6 +3,7 @@
 import random
 from maze_env import Environment, Agent, State
 import time
+from planner import ValueIterationPlanner
 
 def play(grid, num_episodes):
     env = Environment(grid)
@@ -23,7 +24,7 @@ def play(grid, num_episodes):
     
         print("Episode {}: Agent gets {:6.2f} reward.".format(i, total_reward))
 
-def value_evaluation_all_states(grid, max_steps):
+def value_evaluation_all_states(grid, max_steps=7):
     for k in range(max_steps):    
         print('================================================')        
         print('max_steps = {0}'.format(k))        
@@ -54,7 +55,7 @@ def value_evaluation_one_state(grid, s):
 
 if __name__ == "__main__":
 
-    # Creat grid environment
+    # Create grid environment
     grid = [
         [0, 0, 0, 1],
         [0, 9, 0, -1],
@@ -67,12 +68,17 @@ if __name__ == "__main__":
     #     [0, 0, -1]
     # ]    
     
-    play(grid, 10)
+    # play(grid, 10)
+    # 
+    # value_evaluation_all_states(grid, 7)
+    # 
+    # s = State(len(grid)-1,0) # Start from left-bottom cell
+    # value_evaluation_one_state(grid, s)
     
-    value_evaluation_all_states(grid, 7)
-    
-    s = State(len(grid)-1,0) # Start from left-bottom cell
-    value_evaluation_one_state(grid, s)
+    env = Environment(grid)
+    valueIterPlanner = ValueIterationPlanner(env)
+    valueIterPlanner.plan(0.9,0.001)
+    valueIterPlanner.print_value_grid()
     
 
         
