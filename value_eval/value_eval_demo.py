@@ -4,6 +4,7 @@ import random
 from maze_env import Environment, Agent, State
 import time
 from planner import ValueIterationPlanner
+from planner import PolicyIterationPlanner
 
 def play(grid, num_episodes):
     env = Environment(grid)
@@ -75,11 +76,16 @@ if __name__ == "__main__":
     # s = State(len(grid)-1,0) # Start from left-bottom cell
     # value_evaluation_one_state(grid, s)
     
-    env = Environment(grid)
-    valueIterPlanner = ValueIterationPlanner(env)
+    env1 = Environment(grid)
+    valueIterPlanner = ValueIterationPlanner(env1)
     valueIterPlanner.plan(0.9,0.001)
     valueIterPlanner.print_value_grid()
     
+    env2 = Environment(grid)
+    policyIterPlanner = PolicyIterationPlanner(env2)
+    policyIterPlanner.plan(0.9,0.001)
+    policyIterPlanner.print_value_grid()    
+    policyIterPlanner.print_policy()    
 
         
         

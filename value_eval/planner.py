@@ -4,6 +4,7 @@ class Planner():
         self.env = env
         self.log = []
         self.V_grid = []
+        self.iters   = 0
 
     def initialize(self):
         self.env.reset()
@@ -64,11 +65,14 @@ class ValueIterationPlanner(Planner):
                 delta = max(delta, abs(max_reward - V[s]))
                 V[s] = max_reward
 
+            self.V_grid = self.dict_to_grid(V)            
+            self.iters = self.iters + 1
+            print('ValueIteration: iters = {0}'.format(self.iters))
+            self.print_value_grid()
+            print('******************************')
+            
             if delta < threshold:
                 break
-
-        self.V_grid = self.dict_to_grid(V)
-
 
 class PolicyIterationPlanner(Planner):
 
@@ -147,10 +151,23 @@ class PolicyIterationPlanner(Planner):
                     prob = 1 if a == best_action else 0
                     self.policy[s][a] = prob
 
+            # Turn dictionary to grid
+            self.V_grid = self.dict_to_grid(V)
+            self.iters = self.iters + 1
+            print('PolicyIteration: iters = {0}'.format(self.iters))
+            self.print_value_grid()
+            print('******************************')
+
             if update_stable:
                 # If policy isn't updated, stop iteration
                 break
 
-        # Turn dictionary to grid
-        V_grid = self.dict_to_grid(V)
-        return V_grid
+    def print_policy(self):
+        print('PolicyIteration: policy = ')
+        actions = self.env.actions
+        states = self.env.states
+        for s in states:
+            print('\tstate = {}'.format(s))
+            for a in actions:
+                print('\t\taction = {0}, prob = {1}'.format(a,self.policy[s][a]))
+                
